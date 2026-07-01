@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -7,32 +8,44 @@ function VerifyCertificate() {
     const [certificate, setCertificate] = useState("");
     const [result, setResult] = useState(null);
 
-    const certificates = [
-        {
-            id: "REF-2026-000001",
-            metal: "Gold",
-            purity: "99.99%",
-            status: "VERIFIED",
-            date: "29 June 2026"
-        },
-        {
-            id: "REF-2026-000002",
-            metal: "Silver",
-            purity: "99.95%",
-            status: "VERIFIED",
-            date: "29 June 2026"
+    const verifyCertificate = async () => {
+
+        try {
+
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/api/certificates`
+            );
+
+            const found = response.data.find(
+                cert =>
+                    cert.certificate_number.toUpperCase() ===
+                    certificate.toUpperCase()
+            );
+
+            if (found) {
+
+                setResult({
+                    id: found.certificate_number,
+                    metal: found.metal,
+                    purity: found.purity,
+                    status: "VERIFIED",
+                    date: new Date(
+                        found.issued_date
+                    ).toLocaleDateString()
+                });
+
+            } else {
+
+                setResult(false);
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+            setResult(false);
+
         }
-    ];
-
-    const verifyCertificate = () => {
-
-        const found = certificates.find(
-            cert =>
-                cert.id.toUpperCase() ===
-                certificate.toUpperCase()
-        );
-
-        setResult(found || false);
     };
 
     return (
@@ -67,7 +80,7 @@ function VerifyCertificate() {
                         Verify Certificate
                     </button>
 
-                    {result && (
+                    {result && result !== false && (
 
                         <div className="verify-result">
 
@@ -77,22 +90,22 @@ function VerifyCertificate() {
 
                             <p>
                                 Certificate:
-                                {result.id}
+                                {" "}{result.id}
                             </p>
 
                             <p>
                                 Metal:
-                                {result.metal}
+                                {" "}{result.metal}
                             </p>
 
                             <p>
                                 Purity:
-                                {result.purity}
+                                {" "}{result.purity}
                             </p>
 
                             <p>
                                 Date Issued:
-                                {result.date}
+                                {" "}{result.date}
                             </p>
 
                         </div>
