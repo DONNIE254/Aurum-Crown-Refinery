@@ -19,7 +19,7 @@ function CertificateGenerator() {
         try {
 
             const response = await axios.post(
-                "http://localhost:5000/api/certificates",
+    `${import.meta.env.VITE_API_URL}/api/certificates`,
                 {
                     certificate_number: certificate.number,
                     client_name: certificate.client,

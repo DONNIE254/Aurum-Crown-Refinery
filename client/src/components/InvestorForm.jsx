@@ -17,7 +17,7 @@ function InvestorForm() {
         try {
 
             const response = await axios.post(
-                "http://localhost:5000/api/investors",
+    `${import.meta.env.VITE_API_URL}/api/investors`,
                 investor
             );
 

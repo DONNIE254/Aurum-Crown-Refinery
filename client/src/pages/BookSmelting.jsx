@@ -23,7 +23,7 @@ function BookSmelting() {
         try {
 
             const response = await axios.post(
-                "http://localhost:5000/api/smelting",
+    `${import.meta.env.VITE_API_URL}/api/smelting`,
                 job
             );
 
